@@ -1,0 +1,11 @@
+# Tooling / preview artefacts — not source.
+scraps/
+.DS_Store
+node_modules/
+dist/
+
+# Editor / OS noise
+*.swp
+*.swo
+.vscode/
+.idea/

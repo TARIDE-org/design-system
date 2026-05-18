@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--fg); padding: 20px 24px; min-height: 320px; box-sizing: border-box; }
+  .lbl { font: 500 10px/1 'IBM Plex Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-muted); margin-bottom: 14px; }
+  .bracketMark { display:inline-block; width:5px; height:14px; border-left:1.5px solid currentColor; border-bottom:1.5px solid currentColor; vertical-align:-2px; margin-right:4px; }
+
+  .breakpoints { display: grid; grid-template-columns: 1fr 1.4fr 2fr; gap: 14px; align-items: stretch; }
+  .bp { padding: 14px 14px 16px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-md); display: flex; flex-direction: column; gap: 10px; }
+  .bp .top { display: flex; align-items: baseline; justify-content: space-between; }
+  .bp .name { font: 500 12px/1 'IBM Plex Mono', monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); }
+  .bp .range { font: 400 11px/1 'IBM Plex Mono', monospace; color: var(--fg-muted); }
+  .bp .what { font: 400 12px/1.5 'IBM Plex Sans', sans-serif; color: var(--fg-soft); }
+
+  /* Tiny wireframe inside each card showing the layout */
+  .wf { background: var(--bg); border: 1px solid var(--border); height: 110px; display: flex; flex-direction: column; padding: 6px; gap: 4px; }
+  .wf .nav { display: flex; gap: 4px; height: 8px; }
+  .wf .nav .logo { width: 16px; height: 100%; background: var(--ink-100); }
+  .wf .nav .links { flex: 1; display: flex; gap: 4px; }
+  .wf .nav .links span { width: 14px; height: 100%; background: var(--fg-muted); opacity: 0.4; }
+  .wf .nav .cta { width: 18px; height: 100%; background: var(--accent); }
+  .wf .hero { flex: 1; display: flex; gap: 4px; align-items: stretch; }
+  .wf .hero .h1 { flex: 1; background: var(--ink-100); }
+  .wf .grid { display: grid; gap: 3px; }
+  .wf .grid > * { background: var(--paper-300); height: 12px; }
+</style>
+</head>
+<body>
+  <div class="lbl"><span class="bracketMark" style="color:var(--accent)"></span>Responsive · breakpoints</div>
+  <div class="breakpoints">
+
+    <div class="bp">
+      <div class="top"><span class="name">Mobile</span><span class="range">≤ 640px</span></div>
+      <div class="wf" style="width: 80px; align-self: flex-start;">
+        <div class="nav"><div class="logo"></div><div style="flex:1"></div><div class="cta"></div></div>
+        <div class="hero" style="flex-direction: column;"><div class="h1" style="height: 38%;"></div></div>
+        <div class="grid" style="grid-template-columns: 1fr;"><div></div></div>
+      </div>
+      <div class="what">Header drops nav (logo + CTA only). All multi-column blocks collapse to single column. Buttons stack full-width.</div>
+    </div>
+
+    <div class="bp">
+      <div class="top"><span class="name">Tablet</span><span class="range">641–900px</span></div>
+      <div class="wf" style="width: 160px;">
+        <div class="nav"><div class="logo"></div><div class="links"><span></span><span></span><span></span></div><div class="cta"></div></div>
+        <div class="hero"><div class="h1" style="flex: 0.6;"></div></div>
+        <div class="grid" style="grid-template-columns: 1fr 1fr;"><div></div><div></div></div>
+      </div>
+      <div class="what">Header full. Stats and asks 1-col (per spec); layers 2-col. Footer collapses to 2-col. Reading column remains wide.</div>
+    </div>
+
+    <div class="bp">
+      <div class="top"><span class="name">Desktop</span><span class="range">≥ 901px (canonical at 1200)</span></div>
+      <div class="wf" style="width: 280px;">
+        <div class="nav"><div class="logo"></div><div class="links"><span></span><span></span><span></span><span></span></div><div class="cta"></div></div>
+        <div class="hero"><div class="h1" style="flex: 0.7;"></div></div>
+        <div class="grid" style="grid-template-columns: 1fr 1fr 1fr;"><div></div><div></div><div></div></div>
+      </div>
+      <div class="what">Full layout. 1200px max container. 12-col grid implicit. Hero scales fluidly via <code style="font: 400 11px/1 'IBM Plex Mono', monospace; background: var(--bg); padding: 1px 4px;">clamp(38px, 7.2vw, 84px)</code>.</div>
+    </div>
+
+  </div>
+  <div style="margin-top: 14px; font: 400 11px/1.55 'IBM Plex Mono', monospace; color: var(--fg-muted);">
+    Display type uses <code>clamp()</code> so it scales continuously between breakpoints — no jumps. Tap targets stay ≥ 44px on mobile per <a href="../accessibility/wcag-audit.html" style="color: var(--accent);">WCAG 2.5.5</a>.
+  </div>
+</body>
+</html>

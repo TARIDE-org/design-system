@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin:0; padding:0; }
+  body { background: var(--bg); color: var(--fg); padding: 20px 24px; min-height: 140px; box-sizing: border-box; }
+  .lbl { font: 500 10px/1 'IBM Plex Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-muted); margin-bottom: 14px; }
+  .bracketMark { display:inline-block; width:5px; height:14px; border-left:1.5px solid currentColor; border-bottom:1.5px solid currentColor; vertical-align:-2px; margin-right:4px; }
+  
+</style>
+</head><body>
+  <div class="lbl"><span class="bracketMark" style="color:var(--accent)"></span>Motion · restrained, two durations, one curve</div>
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px; font-family: var(--font-mono); font-size: 13px; line-height: 1.6;">
+    <div>
+      <div style="color: var(--accent); font-weight: 500; letter-spacing: 0.04em;">--motion-fast</div>
+      <div style="color: var(--fg)">120ms</div>
+      <div style="color: var(--fg-muted); font-size: 11px;">state changes · hover, focus, color shifts</div>
+    </div>
+    <div>
+      <div style="color: var(--accent); font-weight: 500; letter-spacing: 0.04em;">--motion-default</div>
+      <div style="color: var(--fg)">180ms</div>
+      <div style="color: var(--fg-muted); font-size: 11px;">layout shifts · page transitions, reveals</div>
+    </div>
+    <div style="grid-column: 1 / -1; padding-top: 12px; border-top: 1px solid var(--border);">
+      <div style="color: var(--fg); font-weight: 500;">cubic-bezier(0.4, 0.0, 0.2, 1)</div>
+      <div style="color: var(--fg-muted); font-size: 11px;">single easing. no springs, no bounce, no scale on press.</div>
+    </div>
+  </div></body></html>

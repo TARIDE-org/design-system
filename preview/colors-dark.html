@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin:0; padding:0; }
+  body { background: var(--bg); color: var(--fg); padding: 20px 24px; min-height: 180px; box-sizing: border-box; }
+  .row { display: flex; gap: 12px; align-items: stretch; }
+  .col { display: flex; flex-direction: column; gap: 8px; }
+  .swatch { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+  .swatch .chip { height: 64px; border-radius: 2px; }
+  .meta { font: 500 11px/1.2 'IBM Plex Mono', monospace; letter-spacing: 0.04em; text-transform: uppercase; color: var(--fg-muted); }
+  .hex  { font: 500 12px/1.2 'IBM Plex Mono', monospace; color: var(--fg); }
+  .name { font: 400 11px/1.3 'IBM Plex Sans', sans-serif; color: var(--fg-soft); }
+  .lbl  { font: 500 10px/1 'IBM Plex Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-muted); margin-bottom: 6px; }
+  .bracketMark { display: inline-block; width: 5px; height: 14px; border-left: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; vertical-align: -2px; margin-right: 4px; }
+</style>
+</head><body><body style="background:#14140F; color:#F2EFE6; padding:20px 24px;">
+  <div class="lbl" style="color:#8E8A82"><span class="bracketMark" style="color:#4FA8FF"></span>Dark mode · semantic remap</div>
+  <div class="row">
+    <div class="swatch"><div class="chip" style="background:#14140F;"></div>
+   <div class="meta">bg</div><div class="hex">#14140F</div><div class="name">Canvas</div></div>
+    <div class="swatch"><div class="chip" style="background:#1D1D17;"></div>
+   <div class="meta">bg-raised</div><div class="hex">#1D1D17</div><div class="name">Raised</div></div>
+    <div class="swatch"><div class="chip" style="background:#322F27;"></div>
+   <div class="meta">border</div><div class="hex">#322F27</div><div class="name">Borders</div></div>
+    <div class="swatch"><div class="chip" style="background:#4FA8FF;"></div>
+   <div class="meta">accent</div><div class="hex">#4FA8FF</div><div class="name">Accent · lifted</div></div>
+    <div class="swatch"><div class="chip" style="background:#F4CC5B;"></div>
+   <div class="meta">verified</div><div class="hex">#F4CC5B</div><div class="name">Verified</div></div>
+    <div class="swatch"><div class="chip" style="background:#F2EFE6;"></div>
+   <div class="meta">fg</div><div class="hex">#F2EFE6</div><div class="name">Body text</div></div>
+  </div></body></html>
