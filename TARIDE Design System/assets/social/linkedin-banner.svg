@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1584 396" width="1584" height="396">
+  <defs></defs>
+
+  <rect width="1584" height="396" fill="#F7F4ED"></rect>
+
+  
+  <path fill="none" stroke="#0A55C7" stroke-width="2.5" d="M 1548 36 L 1548 92 M 1548 36 L 1492 36"></path>
+  <path fill="none" stroke="#0A55C7" stroke-width="2.5" d="M 1548 296 L 1548 240 M 1548 296 L 1492 296"></path>
+
+  
+  <text x="560" y="108" font-family="Plex Mono" font-size="14" letter-spacing="1.68" fill="#5A5650" font-weight="500">
+    OPEN EUROPEAN PROTOCOL
+  </text>
+
+  <text x="560" y="184" font-family="Plex Serif" font-size="52" fill="#10100B" font-weight="400">
+    Verification is the default.
+  </text>
+  <text x="560" y="244" font-family="Plex Serif" font-size="52" fill="#0A55C7" font-weight="400">
+    Identification is optional.
+  </text>
+
+  <text x="560" y="290" font-family="Plex Sans" font-size="16" fill="#3D3A33">
+    An open European protocol for verified digital communications · governed by a multi-stakeholder foundation.
+  </text>
+</svg>

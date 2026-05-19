@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TARIDE — Trust and Authentication Registry for Integrity in Digital Europe</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../colors_and_type.css">
+<style>
+  :root { color-scheme: light; }
+  body { margin: 0; }
+  .page { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+  /* The bracket prefix used on every monospace eyebrow */
+  .eyb {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 12px;
+    letter-spacing: var(--tr-eyebrow); text-transform: uppercase;
+    color: var(--accent);
+  }
+  .eyb::before {
+    content: ""; width: 6px; height: 16px;
+    border-left: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+  }
+  .eyb-soft { color: var(--fg-muted); }
+
+  /* Header */
+  header.site { border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 10; }
+  header.site .row { display: flex; align-items: center; justify-content: space-between; gap: 32px; padding: 18px 0; }
+  header.site nav { display: flex; gap: 28px; font-size: 14px; color: var(--fg-soft); }
+  header.site nav a { color: inherit; text-decoration: none; }
+  header.site nav a:hover { color: var(--accent); }
+  header.site .cta { color: var(--accent); font-weight: 500; font-size: 14px; text-decoration: none; }
+  header.site .cta:hover { color: var(--signal-blue-deep); }
+
+  /* Hero */
+  .hero { padding: 96px 0 88px; border-bottom: 1px solid var(--border); }
+  .hero h1 { font-family: var(--font-display); font-weight: 400; font-size: 84px; line-height: 1.02; letter-spacing: -0.018em; margin: 22px 0 28px; max-width: 1000px; }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero p.lead { font-size: 21px; line-height: 1.5; color: var(--fg-soft); max-width: 680px; margin: 0 0 36px; }
+  .hero .row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 8px; font: 500 16px/1 var(--font-body); padding: 14px 22px; border: 1px solid transparent; border-radius: var(--radius-xs); cursor: pointer; text-decoration: none; transition: all var(--motion-fast); }
+  .btn-primary { background: var(--accent); color: var(--accent-fg); }
+  .btn-primary:hover { background: var(--signal-blue-deep); }
+  .btn-secondary { background: transparent; color: var(--fg); border-color: var(--fg); }
+  .btn-secondary:hover { background: var(--fg); color: var(--bg); }
+
+  /* Verified pill */
+  .vp { display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--verified-bg); border: 1px solid var(--verified); border-radius: var(--radius-xs); font: 500 12px/1 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg); }
+  .vp .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--verified); box-shadow: 0 0 0 3px var(--verified-bg); }
+
+  /* Section opener (top rule + eyebrow + display heading) */
+  section { padding: 80px 0; border-bottom: 1px solid var(--border); }
+  section .opener { border-top: 1px solid var(--accent); padding-top: 14px; margin-bottom: 40px; max-width: 800px; }
+  section .opener h2 { font-family: var(--font-display); font-weight: 400; font-size: 48px; line-height: 1.12; letter-spacing: -0.014em; margin: 10px 0 0; }
+
+  /* Stat row */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .stat { padding: 24px 0 0; border-top: 1px solid var(--border); }
+  .stat .v { font-family: var(--font-display); font-size: 60px; line-height: 1; color: var(--fg); margin-bottom: 16px; letter-spacing: -0.02em; }
+  .stat .l { font: 400 15px/1.5 var(--font-body); color: var(--fg); margin-bottom: 8px; }
+  .stat .s { font: 400 12px/1.4 var(--font-mono); color: var(--fg-muted); }
+
+  /* Principle */
+  .principle { background: var(--bg-raised); padding: 96px 0; text-align: center; border-bottom: 1px solid var(--border); }
+  .principle .p { font-family: var(--font-display); font-weight: 400; font-size: 60px; line-height: 1.1; letter-spacing: -0.014em; max-width: 900px; margin: 24px auto 0; }
+  .principle .p em { font-style: normal; color: var(--accent); }
+
+  /* Layers */
+  .layers { display: grid; grid-template-columns: 64px 1fr 1fr 1fr; gap: 0; border-top: 1px solid var(--border); }
+  .layers .ly { padding: 24px 24px 24px 0; border-bottom: 1px solid var(--border); display: contents; }
+  .layers .num { font: 500 12px/1 var(--font-mono); color: var(--fg-muted); letter-spacing: 0.04em; padding: 24px 0; border-bottom: 1px solid var(--border); }
+  .layers .name { font: 500 18px/1.3 var(--font-body); padding: 24px 16px 24px 0; border-bottom: 1px solid var(--border); }
+  .layers .desc { font: 400 14px/1.55 var(--font-body); color: var(--fg-soft); padding: 24px 16px 24px 0; border-bottom: 1px solid var(--border); }
+  .layers .state { font: 400 12px/1.4 var(--font-mono); color: var(--fg-muted); padding: 24px 0 24px 0; border-bottom: 1px solid var(--border); }
+  .layers .state.live { color: var(--signal-success); }
+  .layers .state.wip { color: var(--signal-warning); }
+  .layers .state.spec { color: var(--accent); }
+
+  /* Two-column body */
+  .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
+  .prose p { font-size: 17px; line-height: 1.65; color: var(--fg); margin: 0 0 16px; max-width: 580px; }
+  .prose p.muted { color: var(--fg-soft); }
+
+  /* Roadmap table */
+  table.rmap { width: 100%; border-collapse: collapse; }
+  table.rmap th, table.rmap td { text-align: left; padding: 16px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  table.rmap th { font: 500 11px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-muted); border-bottom: 1px solid var(--ink-100); padding-bottom: 8px; }
+  table.rmap td.q { font: 500 12px/1 var(--font-mono); color: var(--accent); padding-right: 24px; }
+  table.rmap td.t { font: 500 15px/1.4 var(--font-body); }
+  table.rmap td.d { font: 400 14px/1.5 var(--font-body); color: var(--fg-soft); }
+  table.rmap td.s { font: 500 11px/1 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; }
+  table.rmap td.s.now { color: var(--signal-success); }
+  table.rmap td.s.next { color: var(--accent); }
+  table.rmap td.s.later { color: var(--fg-muted); }
+
+  /* Audience asks */
+  .asks { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .ask { padding: 28px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-md); }
+  .ask:hover { box-shadow: var(--elev-2); }
+  .ask .who { font: 500 11px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+  .ask .what { font: 500 19px/1.3 var(--font-body); margin-bottom: 8px; }
+  .ask .why { font: 400 14px/1.55 var(--font-body); color: var(--fg-soft); margin-bottom: 18px; }
+  .ask .go { font: 500 14px/1 var(--font-body); color: var(--accent); text-decoration: none; }
+  .ask .go:hover { color: var(--signal-blue-deep); }
+
+  /* Footer */
+  footer.site { background: var(--bg-raised); padding: 64px 0 40px; border-top: 1px solid var(--border); }
+  footer.site .grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 48px; }
+  footer.site h4 { font: 500 11px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-muted); margin: 0 0 14px; }
+  footer.site ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  footer.site a { color: var(--fg); text-decoration: none; font-size: 14px; }
+  footer.site a:hover { color: var(--accent); text-decoration: underline; }
+  footer.site .meta { font: 400 12px/1.6 var(--font-mono); color: var(--fg-muted); padding-top: 40px; margin-top: 40px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; gap: 32px; }
+
+  /* ─── Responsive ─────────────────────────────────────────────────
+     Fluid typography for the hero + principle (the two display lines);
+     two layout breakpoints — tablet (≤900) and mobile (≤640) — that
+     collapse multi-column blocks to single column and reflow the header.
+  */
+  .hero h1     { font-size: clamp(38px, 7.2vw, 84px); }
+  .hero p.lead { font-size: clamp(17px, 1.8vw, 21px); }
+  .principle .p { font-size: clamp(32px, 5.4vw, 60px); }
+  section .opener h2 { font-size: clamp(28px, 4vw, 48px); }
+  .stat .v { font-size: clamp(40px, 5vw, 60px); }
+
+  @media (max-width: 900px) {
+    .page { padding: 0 24px; }
+    .hero { padding: 64px 0 56px; }
+    section { padding: 56px 0; }
+    .principle { padding: 64px 0; }
+    /* Header — drop the nav, keep logo + CTA */
+    header.site nav { display: none; }
+    /* Stats: 3 → 1 col */
+    .stats { grid-template-columns: 1fr; gap: 20px; }
+    /* Layers: 4 → 2-col grid (number + spans rest) */
+    .layers { grid-template-columns: 48px 1fr; }
+    .layers .name, .layers .desc, .layers .state { padding-left: 8px; }
+    .layers .name { padding-top: 24px; padding-bottom: 6px; border-bottom: 0; }
+    .layers .desc { padding-top: 0; padding-bottom: 6px; border-bottom: 0; }
+    .layers .state { padding-top: 0; padding-bottom: 24px; }
+    .layers .num { padding-top: 24px; padding-bottom: 24px; }
+    /* Two-column body */
+    .twocol { grid-template-columns: 1fr; gap: 32px; }
+    /* Asks: 2 → 1 col */
+    .asks { grid-template-columns: 1fr; }
+    /* Footer: 4 → 2 col */
+    footer.site .grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    footer.site .grid > :first-child { grid-column: 1 / -1; }
+  }
+
+  @media (max-width: 640px) {
+    .page { padding: 0 20px; }
+    .hero { padding: 48px 0 40px; }
+    section { padding: 40px 0; }
+    .principle { padding: 56px 0; }
+    /* Hero buttons stack and the verified pill drops below */
+    .hero .row { gap: 12px; }
+    .hero .row .btn { width: 100%; justify-content: center; }
+    .hero .row .vp { margin-left: 0; }
+    /* Stats: thinner divider */
+    .stat { padding-top: 16px; }
+    .stat .l { font-size: 14px; }
+    /* Table: enable horizontal scroll, stack first column */
+    table.rmap { font-size: 13px; }
+    table.rmap th, table.rmap td { padding: 12px 8px; }
+    table.rmap td.q { padding-right: 8px; }
+    /* Ask cards: tighter padding */
+    .ask { padding: 22px; }
+    /* Footer single column */
+    footer.site .grid { grid-template-columns: 1fr; gap: 28px; }
+    footer.site .meta { flex-direction: column; gap: 4px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="page row">
+    <a href="#" style="display:inline-flex; text-decoration: none;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 354.52 302.96" width="110" aria-label="TARIDE">
+        <path fill="#0A55C7" d="M348.53,107.32h-18.2v-6.52h24.19v97.19h-24.19v-5.87h18.2v-84.8Z"/>
+        <g fill="#10100B">
+          <path d="M52.5,133.61h-13.64v-8.06h35.77v8.06h-13.64v41.43h-8.48v-41.43Z"/>
+          <path d="M100.9,125.55h8.62l19.23,49.48h-8.55l-4.52-11.73h-20.93l-4.52,11.73h-8.55l19.23-49.48ZM97.79,155.53h14.85l-7.42-19.3-7.42,19.3Z"/>
+          <path d="M142.65,125.55h16.26c9.83,0,16.4,6.36,16.4,15.41,0,7.42-3.96,13.08-11.03,14.84l12.37,19.23h-9.9l-11.73-18.66h-3.89v18.66h-8.48v-49.48ZM166.68,140.96c0-4.88-3.39-7.35-8.84-7.35h-6.72v14.7h6.72c5.44,0,8.84-2.47,8.84-7.35Z"/>
+          <path d="M196.04,125.55h8.48v49.48h-8.48v-49.48Z"/>
+          <path d="M267.6,150.3c0,14.28-10.04,24.74-24.46,24.74h-15.97v-49.48h15.97c14.42,0,24.46,10.46,24.46,24.74ZM258.97,150.3c0-9.05-6.08-16.68-15.69-16.68h-7.64v33.37h7.64c9.61,0,15.69-7.71,15.69-16.68Z"/>
+          <path d="M291.96,145.63h19.79v8.06h-19.79v13.29h21.91v8.06h-30.4v-49.48h29.97v8.06h-21.49v12.02Z"/>
+        </g>
+        <path fill="#0A55C7" d="M5.99,191.31h18.2v6.52H0v-97.19h24.19v5.87H5.99v84.8Z"/>
+      </svg>
+    </a>
+    <nav>
+      <a href="#how">Protocol</a>
+      <a href="#foundation">Foundation</a>
+      <a href="#briefs">Briefs</a>
+      <a href="#governance">Governance</a>
+    </nav>
+    <a href="#" class="cta">Read v0.51 ↗</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" style="border-top: 0;">
+  <div class="page">
+    <div class="eyb">Foundation document · v0.51 · registered 12 May 2026</div>
+    <h1>Verification is the default.<br/><em>Identification is optional.</em></h1>
+    <p class="lead">An open European protocol that lets anyone verify a call, message, or email comes from a registered source — without revealing who is behind it.</p>
+    <div class="row">
+      <a class="btn btn-primary" href="#">Read the foundation document →</a>
+      <a class="btn btn-secondary" href="#">Open questions ⌗ 24</a>
+      <div style="flex:1"></div>
+      <span class="vp"><span class="dot"></span> Verified credential · kpn.nl</span>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="page">
+    <div class="opener">
+      <span class="eyb">§1 · the problem</span>
+      <h2>Trust in everyday communication is failing — calmly and at scale.</h2>
+    </div>
+    <div class="stats">
+      <div class="stat">
+        <div class="v">€1.8B</div>
+        <div class="l">European losses to voice-channel fraud in 2024.</div>
+        <div class="s">↳ Europol IOCTA 2024¹</div>
+      </div>
+      <div class="stat">
+        <div class="v">3.4×</div>
+        <div class="l">AI-generated impersonation calls increased year-over-year.</div>
+        <div class="s">↳ ENISA Threat Landscape 2025¹</div>
+      </div>
+      <div class="stat">
+        <div class="v">71%</div>
+        <div class="l">of Europeans answer fewer calls because of caller-uncertainty.</div>
+        <div class="s">↳ BEREC consumer survey, Q3 2025¹</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRINCIPLE -->
+<section class="principle" style="padding-top: 96px; padding-bottom: 96px;">
+  <div class="page">
+    <span class="eyb">§2 · the principle</span>
+    <div class="p">Pseudonymity by <em>default</em>.<br/>Identification by <em>choice</em>.</div>
+    <p style="font: 400 16px/1.6 var(--font-body); color: var(--fg-soft); max-width: 560px; margin: 32px auto 0;">
+      Every registered source can be verified. None are forced to reveal who they are. The asymmetry is the protocol.
+    </p>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="page">
+    <div class="opener">
+      <span class="eyb">§3 · how it works</span>
+      <h2>Five layers, governed by a foundation.</h2>
+    </div>
+    <img src="../../assets/diagrams/taride_architecture.svg" alt="TARIDE protocol architecture" style="display: block; width: 100%; max-width: 1100px; height: auto; margin: 0 auto 56px;" />
+    <div class="layers">
+      <div class="num">L1</div>
+      <div class="name">Registration</div>
+      <div class="desc">Operators register against an eIDAS-aligned chain of trust. No personal data is required at this layer.</div>
+      <div class="state live">live · v0.51</div>
+
+      <div class="num">L2</div>
+      <div class="name">Verification</div>
+      <div class="desc">Resolvers verify a sender's registration in sub-500ms without revealing identity to the verifier.</div>
+      <div class="state spec">in spec</div>
+
+      <div class="num">L3</div>
+      <div class="name">Reputation</div>
+      <div class="desc">Pseudonymous reputation accrues to registered credentials — never to natural persons.</div>
+      <div class="state wip">open question</div>
+
+      <div class="num">L4</div>
+      <div class="name">Consent</div>
+      <div class="desc">Recipients control the disclosure ladder. Identification is granted, not extracted.</div>
+      <div class="state spec">in spec</div>
+
+      <div class="num">L5</div>
+      <div class="name">Resolver</div>
+      <div class="desc">Lightweight client library for telecoms, MUAs, and messaging providers to integrate.</div>
+      <div class="state wip">draft</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY A FOUNDATION -->
+<section id="foundation">
+  <div class="page twocol">
+    <div>
+      <div class="opener" style="margin-bottom: 0;">
+        <span class="eyb">§4 · why a foundation</span>
+        <h2>Infrastructure, not a product.</h2>
+      </div>
+    </div>
+    <div class="prose">
+      <p>TARIDE is governed as a multi-stakeholder foundation rather than incorporated as a commercial entity. Trust infrastructure cannot be subject to acquisition, equity dilution, or unilateral pivot.</p>
+      <p class="muted">The foundation board is composed of telecom representatives, security researchers, privacy advocates, and a European public-interest seat. No commercial entity holds a majority. The protocol is released under CC BY 4.0; the reference implementation under Apache 2.0.</p>
+      <p class="muted">Precedents we acknowledge — and do not imitate — include Mozilla, Signal Foundation, Let's Encrypt, and Ecosia.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHERE WE STAND -->
+<section id="phase">
+  <div class="page">
+    <div class="opener">
+      <span class="eyb">§5 · where we stand</span>
+      <h2>Pre-specification, post-vision.</h2>
+    </div>
+    <table class="rmap">
+      <thead>
+        <tr>
+          <th style="width: 72px;">Phase</th>
+          <th>Deliverable</th>
+          <th>Detail</th>
+          <th style="width: 120px;">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="q">Q2·26</td><td class="t">Foundation registered</td><td class="d">Dutch stichting; statutes filed with Kamer van Koophandel; board seated.</td><td class="s now">✓ done</td></tr>
+        <tr><td class="q">Q2·26</td><td class="t">Foundation document v0.51</td><td class="d">Vision, principles, governance. Open for critical feedback through Q3.</td><td class="s now">✓ done</td></tr>
+        <tr><td class="q">Q3·26</td><td class="t">Technical spec v0.6</td><td class="d">Resolver protocol, credential format, attestation chain.</td><td class="s next">in progress</td></tr>
+        <tr><td class="q">Q4·26</td><td class="t">Reference resolver</td><td class="d">Apache 2.0 implementation, Go + Rust bindings, eIDAS test harness.</td><td class="s next">next</td></tr>
+        <tr><td class="q">Q1·27</td><td class="t">First operator pilot</td><td class="d">One Dutch telecom, one Dutch ISP, one European messaging provider.</td><td class="s later">later</td></tr>
+        <tr><td class="q">Q2·27</td><td class="t">v1.0 spec freeze</td><td class="d">After two pilots, the spec freezes for two years before any breaking change.</td><td class="s later">later</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- WHAT WE ASK -->
+<section id="briefs">
+  <div class="page">
+    <div class="opener">
+      <span class="eyb">§6 · what we ask</span>
+      <h2>Differentiated by audience. One short brief each.</h2>
+    </div>
+    <div class="asks">
+      <div class="ask">
+        <div class="who">Telecom operators</div>
+        <div class="what">Read the integration sketch. Tell us where it breaks.</div>
+        <div class="why">Pilot opportunity for two operators in 2027. Pre-spec feedback shapes the resolver surface.</div>
+        <a class="go" href="#">Telecom brief · 8 pages →</a>
+      </div>
+      <div class="ask">
+        <div class="who">Security researchers</div>
+        <div class="what">Attack the threat model. We have it written down.</div>
+        <div class="why">v0.51 §4 details the threat model and the open questions we expect adversarial review on.</div>
+        <a class="go" href="#">Security brief · 12 pages →</a>
+      </div>
+      <div class="ask">
+        <div class="who">Privacy & DID/SSI community</div>
+        <div class="what">Tell us where pseudonymity is leaky.</div>
+        <div class="why">We want this critiqued by people who have lived through W3C-DID and ID Wallet rollouts.</div>
+        <a class="go" href="#">Privacy brief · 6 pages →</a>
+      </div>
+      <div class="ask">
+        <div class="who">EU policy stakeholders</div>
+        <div class="what">Comment on eIDAS 2.0 / EBSI alignment.</div>
+        <div class="why">We need this calibrated against the implementing regulations as they actually land.</div>
+        <a class="go" href="#">Policy brief · 4 pages →</a>
+      </div>
+      <div class="ask">
+        <div class="who">App developers</div>
+        <div class="what">Look at the resolver API. Squint at it.</div>
+        <div class="why">Pre-spec API sketch — your integration shape determines whether the protocol is real.</div>
+        <a class="go" href="#">Developer brief · 10 pages →</a>
+      </div>
+      <div class="ask">
+        <div class="who">Journalists & informed public</div>
+        <div class="what">Read the 2-page summary.</div>
+        <div class="why">Plain-language; quotable principles; numbers cited. Nothing speculative.</div>
+        <a class="go" href="#">Summary · 2 pages →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site">
+  <div class="page">
+    <div class="grid">
+      <div>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 354.52 302.96" width="130" aria-label="TARIDE">
+          <path fill="#0A55C7" d="M348.53,107.32h-18.2v-6.52h24.19v97.19h-24.19v-5.87h18.2v-84.8Z"/>
+          <g fill="#10100B">
+            <path d="M52.5,133.61h-13.64v-8.06h35.77v8.06h-13.64v41.43h-8.48v-41.43Z"/>
+            <path d="M100.9,125.55h8.62l19.23,49.48h-8.55l-4.52-11.73h-20.93l-4.52,11.73h-8.55l19.23-49.48ZM97.79,155.53h14.85l-7.42-19.3-7.42,19.3Z"/>
+            <path d="M142.65,125.55h16.26c9.83,0,16.4,6.36,16.4,15.41,0,7.42-3.96,13.08-11.03,14.84l12.37,19.23h-9.9l-11.73-18.66h-3.89v18.66h-8.48v-49.48ZM166.68,140.96c0-4.88-3.39-7.35-8.84-7.35h-6.72v14.7h6.72c5.44,0,8.84-2.47,8.84-7.35Z"/>
+            <path d="M196.04,125.55h8.48v49.48h-8.48v-49.48Z"/>
+            <path d="M267.6,150.3c0,14.28-10.04,24.74-24.46,24.74h-15.97v-49.48h15.97c14.42,0,24.46,10.46,24.46,24.74ZM258.97,150.3c0-9.05-6.08-16.68-15.69-16.68h-7.64v33.37h7.64c9.61,0,15.69-7.71,15.69-16.68Z"/>
+            <path d="M291.96,145.63h19.79v8.06h-19.79v13.29h21.91v8.06h-30.4v-49.48h29.97v8.06h-21.49v12.02Z"/>
+          </g>
+          <path fill="#0A55C7" d="M5.99,191.31h18.2v6.52H0v-97.19h24.19v5.87H5.99v84.8Z"/>
+        </svg>
+        <p style="font: 400 14px/1.6 var(--font-body); color: var(--fg-soft); margin: 18px 0 0; max-width: 320px;">
+          Trust and Authentication Registry for Integrity in Digital Europe — Dutch stichting, registered May 2026, Amsterdam.
+        </p>
+      </div>
+      <div>
+        <h4>Protocol</h4>
+        <ul>
+          <li><a href="#">Foundation document</a></li>
+          <li><a href="#">Technical spec</a></li>
+          <li><a href="#">Reference resolver</a></li>
+          <li><a href="#">Open questions ⌗ 24</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Foundation</h4>
+        <ul>
+          <li><a href="#">Board</a></li>
+          <li><a href="#">Governance statutes</a></li>
+          <li><a href="#">Financial reports</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Open</h4>
+        <ul>
+          <li><a href="#">GitHub ↗</a></li>
+          <li><a href="#">Mailing list</a></li>
+          <li><a href="#">RSS / Atom</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="meta">
+      <span>© TARIDE Foundation 2026 · all materials CC BY 4.0 unless noted.</span>
+      <span>v0.51 · last updated 18 May 2026</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

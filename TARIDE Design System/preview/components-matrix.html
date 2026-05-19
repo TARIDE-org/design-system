@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TARIDE — Component states · matrix</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--fg); transition: background 0.2s, color 0.2s; }
+
+  .page { max-width: 1280px; margin: 0 auto; padding: 48px 32px 96px; }
+
+  /* Page header with theme toggle */
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 56px; }
+  .page-head h1 { font: 400 44px/1.05 var(--font-display); letter-spacing: -0.014em; margin: 12px 0 0; }
+  .page-head .eyb { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); display: inline-flex; align-items: center; gap: 8px; }
+  .page-head .eyb::before { content: ""; width: 6px; height: 16px; border-left: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; }
+  .theme-toggle {
+    display: inline-flex; gap: 0; align-items: stretch; padding: 3px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-xs);
+    font: 500 12px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .theme-toggle button { background: transparent; color: var(--fg-soft); border: 0; padding: 8px 14px; cursor: pointer; font: inherit; border-radius: 2px; }
+  .theme-toggle button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); }
+
+  /* Section */
+  section { margin-bottom: 80px; }
+  section > .section-head { border-top: 1px solid var(--accent); padding-top: 14px; margin-bottom: 32px; max-width: 800px; }
+  section > .section-head h2 { font: 400 32px/1.15 var(--font-display); letter-spacing: -0.012em; margin: 8px 0 6px; }
+  section > .section-head p { font: 400 14px/1.6 var(--font-body); color: var(--fg-soft); margin: 0; max-width: 600px; }
+
+  /* Matrix grid: caption col + state cols */
+  .matrix { display: grid; gap: 0; border-top: 1px solid var(--border); }
+  .matrix .row { display: grid; grid-template-columns: 120px repeat(var(--cols, 4), 1fr); gap: 0; border-bottom: 1px solid var(--border); align-items: center; }
+  .matrix .row.heads { background: transparent; border-bottom: 1px solid var(--ink-100); }
+  .matrix .cell, .matrix .rowlbl, .matrix .head {
+    padding: 20px 16px; min-height: 60px; display: flex; align-items: center;
+    border-right: 1px dashed var(--border);
+  }
+  .matrix .row > :last-child { border-right: 0; }
+  .matrix .rowlbl {
+    font: 500 11px/1.3 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--fg-muted); align-items: center;
+  }
+  .matrix .head {
+    font: 500 10px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--fg); padding: 14px 16px; min-height: 0;
+  }
+
+  /* ─── Buttons (and their forced states) ─── */
+  .btn { display: inline-flex; align-items: center; gap: 8px; font: 500 15px/1 var(--font-body); padding: 12px 18px; border: 1px solid transparent; border-radius: var(--radius-xs); cursor: pointer; text-decoration: none; transition: all var(--motion-fast); }
+  .btn-primary { background: var(--accent); color: var(--accent-fg); }
+  .btn-primary:hover, .btn-primary.is-hover { background: var(--signal-blue-deep); }
+  .btn-primary:focus-visible, .btn-primary.is-focus { box-shadow: var(--focus-ring); outline: none; }
+  .btn-primary:active, .btn-primary.is-active { background: var(--signal-blue-deep); }
+  .btn-primary[disabled], .btn-primary.is-disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-secondary { background: transparent; color: var(--fg); border-color: var(--fg); }
+  .btn-secondary:hover, .btn-secondary.is-hover { background: var(--fg); color: var(--bg); }
+  .btn-secondary:focus-visible, .btn-secondary.is-focus { box-shadow: var(--focus-ring); outline: none; }
+  .btn-secondary:active, .btn-secondary.is-active { background: var(--fg); color: var(--bg); }
+  .btn-secondary[disabled], .btn-secondary.is-disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-ghost { background: transparent; color: var(--accent); padding: 12px 4px; text-decoration: underline; text-underline-offset: 3px; }
+  .btn-ghost:hover, .btn-ghost.is-hover { color: var(--signal-blue-deep); }
+  .btn-ghost:focus-visible, .btn-ghost.is-focus { box-shadow: var(--focus-ring); outline: none; padding: 12px 8px; }
+  .btn-ghost[disabled], .btn-ghost.is-disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-destructive { background: var(--signal-error); color: #fff; }
+  .btn-destructive:hover, .btn-destructive.is-hover { background: #931E1E; }
+  .btn-destructive:focus-visible, .btn-destructive.is-focus { box-shadow: 0 0 0 3px var(--signal-error-tint), 0 0 0 1.5px var(--signal-error); outline: none; }
+  .btn-destructive[disabled], .btn-destructive.is-disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ─── Inputs ─── */
+  .field { display: flex; flex-direction: column; gap: 6px; width: 100%; max-width: 220px; }
+  .field label { font: 500 10px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-muted); }
+  .field .help { font: 400 11px/1.4 var(--font-mono); color: var(--fg-muted); }
+  .field .help.error { color: var(--signal-error); }
+  .inp { width: 100%; font: 400 14px/1 var(--font-body); padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--fg); box-sizing: border-box; }
+  .inp:hover, .inp.is-hover { border-color: var(--fg-soft); }
+  .inp:focus-visible, .inp.is-focus { border-color: var(--accent); box-shadow: var(--focus-ring); outline: none; }
+  .inp.is-error { border-color: var(--signal-error); background: var(--signal-error-tint); }
+  .inp.is-error:focus-visible, .inp.is-error.is-focus { box-shadow: 0 0 0 3px var(--signal-error-tint), 0 0 0 1.5px var(--signal-error); }
+  .inp[disabled], .inp.is-disabled { opacity: 0.6; cursor: not-allowed; background: var(--bg-raised); }
+  .inp[readonly], .inp.is-readonly { background: var(--bg-raised); }
+
+  /* Textarea */
+  .ta { width: 100%; min-height: 60px; resize: vertical; font: 400 14px/1.5 var(--font-body); padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--fg); box-sizing: border-box; }
+  .ta:focus-visible, .ta.is-focus { border-color: var(--accent); box-shadow: var(--focus-ring); outline: none; }
+
+  /* Checkbox */
+  .cb { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font: 400 14px/1 var(--font-body); }
+  .cb input { appearance: none; width: 16px; height: 16px; border: 1.5px solid var(--fg); border-radius: 2px; background: var(--bg); position: relative; cursor: pointer; }
+  .cb input:checked { background: var(--accent); border-color: var(--accent); }
+  .cb input:checked::after { content: ""; position: absolute; top: 2px; left: 4px; width: 4px; height: 8px; border: solid var(--accent-fg); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
+  .cb input.is-focus, .cb input:focus-visible { box-shadow: var(--focus-ring); outline: none; }
+  .cb input[disabled] { opacity: 0.4; cursor: not-allowed; }
+
+  /* Select (custom-styled native) */
+  .sel { font: 400 14px/1 var(--font-body); padding: 10px 32px 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg) url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5 L6 6.5 L11 1.5' stroke='%2310100B' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 10px center; color: var(--fg); appearance: none; cursor: pointer; }
+  .sel:focus-visible, .sel.is-focus { border-color: var(--accent); box-shadow: var(--focus-ring); outline: none; }
+
+  /* ─── Verified credential ─── */
+  .vp { display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px; border-radius: var(--radius-xs); font: 500 12px/1 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; }
+  .vp.verified { background: var(--verified-bg); border: 1px solid var(--verified); color: var(--fg); }
+  .vp.verified .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--verified); box-shadow: 0 0 0 3px var(--verified-bg); }
+  .vp.pending { background: var(--bg-raised); border: 1px dashed var(--fg-muted); color: var(--fg-muted); }
+  .vp.pending .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--fg-muted); }
+  .vp.revoked { background: var(--signal-error-tint); border: 1px solid var(--signal-error); color: var(--fg); text-decoration: line-through; text-decoration-thickness: 1px; }
+  .vp.revoked .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--signal-error); }
+
+  /* Framed credential card — the brand-distinctive layout */
+  .cred { position: relative; padding: 18px 22px; background: var(--bg-raised); min-width: 280px; max-width: 360px; }
+  .cred.verified::before { content: ""; position: absolute; top: 0; right: 0; width: 14px; height: 28px; border-top: 2px solid var(--verified); border-right: 2px solid var(--verified); }
+  .cred.verified::after { content: ""; position: absolute; bottom: 0; left: 0; width: 14px; height: 28px; border-bottom: 2px solid var(--verified); border-left: 2px solid var(--verified); }
+  .cred.pending::before, .cred.pending::after { content: ""; position: absolute; border-color: var(--fg-muted); border-style: dashed; }
+  .cred.pending::before { top: 0; right: 0; width: 14px; height: 28px; border-top-width: 2px; border-right-width: 2px; }
+  .cred.pending::after { bottom: 0; left: 0; width: 14px; height: 28px; border-bottom-width: 2px; border-left-width: 2px; }
+  .cred.revoked::before { content: ""; position: absolute; top: 0; right: 0; width: 14px; height: 28px; border-top: 2px solid var(--signal-error); border-right: 2px solid var(--signal-error); }
+  .cred.revoked::after { content: ""; position: absolute; bottom: 0; left: 0; width: 14px; height: 28px; border-bottom: 2px solid var(--signal-error); border-left: 2px solid var(--signal-error); }
+  .cred .label { font: 500 10px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+  .cred.verified .label { color: #A87B0E; }
+  .cred.pending .label { color: var(--fg-muted); }
+  .cred.revoked .label { color: var(--signal-error); }
+  .cred .what { font: 400 18px/1.25 var(--font-display); color: var(--fg); margin-bottom: 12px; }
+  .cred.revoked .what { text-decoration: line-through; }
+  .cred .meta { font: 400 11px/1.6 var(--font-mono); color: var(--fg-muted); }
+
+  /* ─── Callout ─── */
+  .cal { padding: 12px 16px; font: 400 14px/1.5 var(--font-body); color: var(--fg); }
+  .cal.note { background: var(--accent-tint); border-left: 2px solid var(--accent); }
+  .cal.note .who { color: var(--accent); }
+  .cal.open { background: var(--bg-raised); border-left: 2px solid var(--fg-muted); }
+  .cal.open .who { color: var(--fg-muted); }
+  .cal.caution { background: var(--signal-error-tint); border-left: 2px solid var(--signal-error); }
+  .cal.caution .who { color: var(--signal-error); }
+  .cal.success { background: rgba(45,122,90,0.08); border-left: 2px solid var(--signal-success); }
+  .cal.success .who { color: var(--signal-success); }
+  .cal .who { display: inline-block; font: 500 11px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; margin-right: 8px; }
+
+  /* ─── Cards ─── */
+  .crd { padding: 18px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-md); transition: box-shadow var(--motion-fast); width: 240px; }
+  .crd.is-hover { box-shadow: var(--elev-2); }
+  .crd.is-selected { box-shadow: 0 0 0 1.5px var(--accent), 0 0 0 4px var(--accent-tint); }
+  .crd .eyb { font: 500 10px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  .crd .ti { font: 500 16px/1.3 var(--font-body); color: var(--fg); margin-bottom: 6px; }
+  .crd .body { font: 400 13px/1.45 var(--font-body); color: var(--fg-soft); margin: 0; }
+
+  /* ─── Links ─── */
+  .lnk { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; font: 400 14px/1 var(--font-body); }
+  .lnk.is-hover { color: var(--signal-blue-deep); text-decoration-thickness: 2px; }
+  .lnk.is-focus { outline: none; box-shadow: var(--focus-ring); border-radius: var(--radius-xs); }
+  .lnk.visited { color: #5A3A8C; }
+  .lnk.internal { color: var(--fg); text-decoration: underline; text-decoration-color: var(--accent); }
+  .lnk.external { color: var(--accent); }
+
+  /* small note */
+  .legend { font: 400 11px/1.5 var(--font-mono); color: var(--fg-muted); margin-top: 12px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="page-head">
+    <div>
+      <span class="eyb">components × states</span>
+      <h1>Component-state matrix</h1>
+    </div>
+    <div class="theme-toggle" role="group" aria-label="Theme">
+      <button data-theme="light" aria-pressed="true">Light</button>
+      <button data-theme="dark"  aria-pressed="false">Dark</button>
+    </div>
+  </div>
+
+  <!-- ─── BUTTONS ──────────────────────────────────────────────── -->
+  <section>
+    <div class="section-head">
+      <h2>Buttons</h2>
+      <p>Four variants × five states. Hover/active darken the fill; focus adds a 3px tinted halo + 1.5px accent outline; disabled drops opacity to 0.5 with not-allowed cursor.</p>
+    </div>
+    <div class="matrix" style="--cols: 5;">
+      <div class="row heads">
+        <div class="head" style="color: var(--fg-muted)">variant</div>
+        <div class="head">Default</div>
+        <div class="head">Hover</div>
+        <div class="head">Focus</div>
+        <div class="head">Active</div>
+        <div class="head">Disabled</div>
+      </div>
+      <div class="row">
+        <div class="rowlbl">Primary</div>
+        <div class="cell"><button class="btn btn-primary">Read v0.51 →</button></div>
+        <div class="cell"><button class="btn btn-primary is-hover">Read v0.51 →</button></div>
+        <div class="cell"><button class="btn btn-primary is-focus">Read v0.51 →</button></div>
+        <div class="cell"><button class="btn btn-primary is-active">Read v0.51 →</button></div>
+        <div class="cell"><button class="btn btn-primary is-disabled" disabled>Read v0.51 →</button></div>
+      </div>
+      <div class="row">
+        <div class="rowlbl">Secondary</div>
+        <div class="cell"><button class="btn btn-secondary">Open questions</button></div>
+        <div class="cell"><button class="btn btn-secondary is-hover">Open questions</button></div>
+        <div class="cell"><button class="btn btn-secondary is-focus">Open questions</button></div>
+        <div class="cell"><button class="btn btn-secondary is-active">Open questions</button></div>
+        <div class="cell"><button class="btn btn-secondary is-disabled" disabled>Open questions</button></div>
+      </div>
+      <div class="row">
+        <div class="rowlbl">Ghost</div>
+        <div class="cell"><button class="btn btn-ghost">See briefs ↗</button></div>
+        <div class="cell"><button class="btn btn-ghost is-hover">See briefs ↗</button></div>
+        <div class="cell"><button class="btn btn-ghost is-focus">See briefs ↗</button></div>
+        <div class="cell"><button class="btn btn-ghost">See briefs ↗</button></div>
+        <div class="cell"><button class="btn btn-ghost is-disabled" disabled>See briefs ↗</button></div>
+      </div>
+      <div class="row">
+        <div class="rowlbl">Destructive</div>
+        <div class="cell"><button class="btn btn-destructive">Revoke credential</button></div>
+        <div class="cell"><button class="btn btn-destructive is-hover">Revoke credential</button></div>
+        <div class="cell"><button class="btn btn-destructive is-focus">Revoke credential</button></div>
+        <div class="cell"><button class="btn btn-destructive is-active">Revoke credential</button></div>
+        <div class="cell"><button class="btn btn-destructive is-disabled" disabled>Revoke credential</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── INPUTS ──────────────────────────────────────────────── -->
+  <section>
+    <div class="section-head">
+      <h2>Form fields</h2>
+      <p>Text input, textarea, select, checkbox. Five state columns covering rest → user interaction → server-side validation.</p>
+    </div>
+    <div class="matrix" style="--cols: 5;">
+      <div class="row heads">
+        <div class="head" style="color: var(--fg-muted)">variant</div>
+        <div class="head">Default</div>
+        <div class="head">Focus</div>
+        <div class="head">Filled</div>
+        <div class="head">Error</div>
+        <div class="head">Disabled</div>
+      </div>
+      <div class="row">
+        <div class="rowlbl">Input</div>
+        <div class="cell"><div class="field"><label>phone</label><input class="inp" placeholder="+31 20 …" /></div></div>
+        <div class="cell"><div class="field"><label>phone</label><input class="inp is-focus" placeholder="+31 20 …" /></div></div>
+        <div class="cell"><div class="field"><label>phone</label><input class="inp" value="+31 20 123 4567" /></div></div>
+        <div class="cell"><div class="field"><label>phone</label><input class="inp is-error" value="020-123-4567" /><div class="help error">↳ must include country code</div></div></div>
+        <div class="cell"><div class="field"><label>phone</label><input class="inp is-disabled" value="+31 20 123 4567" disabled /></div></div>
+      </div>
+      <div class="row">
+        <div class="rowlbl">Textarea</div>
+        <div class="cell" style="padding: 16px;"><textarea class="ta" placeholder="Comment…"></textarea></div>
+        <div class="cell" style="padding: 16px;"><textarea class="ta is-focus" placeholder="Comment…"></textarea></div>
+        <div class="cell" style="padding: 16px;"><textarea class="ta">Pseudonymity isn't optional. Restate clearly.</textarea></div>
+        <div class="cell" style="padding: 16px;"><textarea class="ta is-error">Too long.</textarea></div>
+        <div class="cell" style="padding: 16px;"><textarea class="ta" disabled>Read-only context.</textarea></div>
+      </div>
+      <div class="row">
+        <div class="rowlbl">Select</div>
+        <div class="cell"><select class="sel"><option>pseudonymous</option></select></div>
+        <div class="cell"><select class="sel is-focus"><option>pseudonymous</option></select></div>
+        <div class="cell"><select class="sel"><option>identified</option></select></div>
+        <div class="cell"><select class="sel is-error"><option>public</option></select></div>
+        <div class="cell"><select class="sel" disabled><option>pseudonymous</option></select></div>
+      </div>
+      <div class="row">
+        <div class="rowlbl">Checkbox</div>
+        <div class="cell"><label class="cb"><input type="checkbox" /> Confirm scope</label></div>
+        <div class="cell"><label class="cb"><input type="checkbox" class="is-focus" /> Confirm scope</label></div>
+        <div class="cell"><label class="cb"><input type="checkbox" checked /> Confirm scope</label></div>
+        <div class="cell" style="font: 400 12px/1.5 var(--font-mono); color: var(--signal-error)">↳ no error state for boolean</div>
+        <div class="cell"><label class="cb" style="opacity: 0.5"><input type="checkbox" checked disabled /> Confirm scope</label></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── VERIFIED CREDENTIAL ──────────────────────────────────── -->
+  <section>
+    <div class="section-head">
+      <h2>Verified credential</h2>
+      <p>The brand-distinctive component. Three lifecycle states. Yellow lives <em>only</em> here (verified surface). Pending uses neutral dashed framing; revoked uses error red.</p>
+    </div>
+    <div class="matrix" style="--cols: 3;">
+      <div class="row heads">
+        <div class="head" style="color: var(--fg-muted)">form</div>
+        <div class="head">Verified</div>
+        <div class="head">Pending</div>
+        <div class="head">Revoked</div>
+      </div>
+      <div class="row">
+        <div class="rowlbl">Pill</div>
+        <div class="cell"><span class="vp verified"><span class="dot"></span> Verified · kpn.nl</span></div>
+        <div class="cell"><span class="vp pending"><span class="dot"></span> Pending · kpn.nl</span></div>
+        <div class="cell"><span class="vp revoked"><span class="dot"></span> Revoked · kpn.nl</span></div>
+      </div>
+      <div class="row" style="align-items: stretch;">
+        <div class="rowlbl">Framed card</div>
+        <div class="cell" style="align-items: flex-start;">
+          <div class="cred verified">
+            <div class="label">Verified credential</div>
+            <div class="what">KPN asserts this call originates from a registered operator.</div>
+            <div class="meta">issued&nbsp; 2026-05-18 10:03Z<br/>chain&nbsp;&nbsp; eIDAS L3 → KPN<br/>scope&nbsp;&nbsp; pseudonymous</div>
+          </div>
+        </div>
+        <div class="cell" style="align-items: flex-start;">
+          <div class="cred pending">
+            <div class="label">Awaiting attestation</div>
+            <div class="what">Issuer chain not yet resolved. Hold the call until verified.</div>
+            <div class="meta">requested&nbsp; 2026-05-18 10:02Z<br/>timeout&nbsp;&nbsp;&nbsp; ≤ 500ms<br/>state&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; resolving</div>
+          </div>
+        </div>
+        <div class="cell" style="align-items: flex-start;">
+          <div class="cred revoked">
+            <div class="label">Revoked credential</div>
+            <div class="what">Credential was revoked. Treat as unverified.</div>
+            <div class="meta">issued&nbsp;&nbsp; 2026-05-18 10:03Z<br/>revoked&nbsp; 2026-05-18 10:06Z<br/>reason&nbsp;&nbsp; chain breach</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CALLOUTS ─────────────────────────────────────────────── -->
+  <section>
+    <div class="section-head">
+      <h2>Callouts</h2>
+      <p>Inline content notes — left-rule + tinted background. Four semantic flavours; yellow is conspicuously absent (verified-only).</p>
+    </div>
+    <div class="matrix" style="--cols: 4;">
+      <div class="row heads">
+        <div class="head" style="color: var(--fg-muted)">flavour</div>
+        <div class="head">Note</div>
+        <div class="head">Open question</div>
+        <div class="head">Caution</div>
+        <div class="head">Success</div>
+      </div>
+      <div class="row" style="align-items: stretch;">
+        <div class="rowlbl">Sample</div>
+        <div class="cell"><div class="cal note"><span class="who">note</span>The five layers compose left-to-right. Each is independently auditable.</div></div>
+        <div class="cell"><div class="cal open"><span class="who">open question</span>Should reputation track per-credential or per-issuer? Comments wanted.</div></div>
+        <div class="cell"><div class="cal caution"><span class="who">caution</span>Pre-specification. APIs and structures will change before v1.0.</div></div>
+        <div class="cell"><div class="cal success"><span class="who">resolved</span>Issuer chain verified end-to-end. Continue the call.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CARDS ───────────────────────────────────────────────── -->
+  <section>
+    <div class="section-head">
+      <h2>Cards</h2>
+      <p>Paper-raised content block. Hover lifts to <code style="font: 400 12px/1 var(--font-mono); background: var(--bg-raised); padding: 1px 4px;">elev-2</code>. Selected/focused gets a 1.5px accent ring plus a 4px tinted halo. No colour-coded left borders.</p>
+    </div>
+    <div class="matrix" style="--cols: 3;">
+      <div class="row heads">
+        <div class="head" style="color: var(--fg-muted)">state</div>
+        <div class="head">Default</div>
+        <div class="head">Hover</div>
+        <div class="head">Focused / selected</div>
+      </div>
+      <div class="row" style="align-items: stretch;">
+        <div class="rowlbl">Card</div>
+        <div class="cell" style="align-items: flex-start;"><div class="crd"><div class="eyb">§1 registration</div><div class="ti">Who can register?</div><p class="body">Any operator with an eIDAS-aligned chain may register an issuer.</p></div></div>
+        <div class="cell" style="align-items: flex-start;"><div class="crd is-hover"><div class="eyb">§2 verification</div><div class="ti">Hovered card</div><p class="body">Hover only lifts elevation — no transform, no scale.</p></div></div>
+        <div class="cell" style="align-items: flex-start;"><div class="crd is-selected"><div class="eyb">§3 reputation</div><div class="ti">Selected card</div><p class="body">Selected/focused gets the same ring used by inputs.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── LINKS ───────────────────────────────────────────────── -->
+  <section>
+    <div class="section-head">
+      <h2>Links</h2>
+      <p>Underlined by default — 1px thickness, 3px offset. Hover thickens to 2px and darkens. Visited gets a muted purple. Internal references use ink color with an accent-tinted underline.</p>
+    </div>
+    <div class="matrix" style="--cols: 5;">
+      <div class="row heads">
+        <div class="head" style="color: var(--fg-muted)">variant</div>
+        <div class="head">Default</div>
+        <div class="head">Hover</div>
+        <div class="head">Focus</div>
+        <div class="head">Visited</div>
+        <div class="head">External</div>
+      </div>
+      <div class="row">
+        <div class="rowlbl">Link</div>
+        <div class="cell"><a class="lnk" href="#">foundation document</a></div>
+        <div class="cell"><a class="lnk is-hover" href="#">foundation document</a></div>
+        <div class="cell"><a class="lnk is-focus" href="#">foundation document</a></div>
+        <div class="cell"><a class="lnk visited" href="#">foundation document</a></div>
+        <div class="cell"><a class="lnk external" href="#">github repo ↗</a></div>
+      </div>
+      <div class="row">
+        <div class="rowlbl">Internal</div>
+        <div class="cell" style="grid-column: 2 / span 5;"><a class="lnk internal" href="#">§3 · how it works</a>&nbsp;&nbsp;<span style="font: 400 11px/1 var(--font-mono); color: var(--fg-muted)">↳ ink colour, accent-tinted underline</span></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="legend">All states are forced via <code>.is-hover / .is-focus / .is-active</code> classes that mirror the real <code>:hover / :focus-visible / :active</code> rules. The real selectors fire when you actually interact.</p>
+
+</div>
+
+<script>
+  // Theme toggle — swaps :root[data-theme] to flip semantic CSS variables.
+  const root = document.documentElement;
+  const btns = document.querySelectorAll('.theme-toggle button');
+  btns.forEach(b => b.addEventListener('click', () => {
+    const t = b.dataset.theme;
+    if (t === 'dark') root.setAttribute('data-theme', 'dark'); else root.removeAttribute('data-theme');
+    btns.forEach(x => x.setAttribute('aria-pressed', String(x.dataset.theme === t)));
+    try { localStorage.setItem('taride-matrix-theme', t); } catch {}
+  }));
+  // Restore from storage so the user lands where they left off.
+  try {
+    const t = localStorage.getItem('taride-matrix-theme');
+    if (t === 'dark') {
+      root.setAttribute('data-theme', 'dark');
+      btns.forEach(x => x.setAttribute('aria-pressed', String(x.dataset.theme === 'dark')));
+    }
+  } catch {}
+</script>
+</body>
+</html>

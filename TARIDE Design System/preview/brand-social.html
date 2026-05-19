@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TARIDE — Social & avatar marks</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--fg); font-family: var(--font-body); padding: 56px 48px 96px; }
+  .page { max-width: 1280px; margin: 0 auto; }
+
+  /* Page head */
+  .head { margin-bottom: 64px; }
+  .head .eyb {
+    display: inline-flex; align-items: center; gap: 8px;
+    font: 500 12px/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
+  }
+  .head .eyb::before { content: ""; width: 6px; height: 16px; border-left: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; }
+  .head h1 { font: 400 44px/1.05 var(--font-display); letter-spacing: -0.014em; margin: 14px 0 8px; }
+  .head .lede { font: 400 17px/1.55 var(--font-body); color: var(--fg-soft); max-width: 720px; margin: 0; }
+
+  section { margin-bottom: 64px; }
+  section > h2 {
+    border-top: 1px solid var(--accent); padding-top: 14px;
+    font: 400 28px/1.2 var(--font-display); margin: 0 0 4px; letter-spacing: -0.01em;
+  }
+  section > .sub { font: 400 14px/1.6 var(--font-body); color: var(--fg-soft); margin: 0 0 24px; max-width: 720px; }
+
+  /* Avatar row — show each at 256 and 40px to verify legibility at small sizes */
+  .avatars { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
+  .avatar-card {
+    background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-md);
+    padding: 24px; display: flex; gap: 28px; align-items: center;
+  }
+  .avatar-card .big { width: 256px; height: 256px; border-radius: var(--radius-md); overflow: hidden; background: var(--bg-overlay); box-shadow: var(--elev-1); }
+  .avatar-card .big img { width: 100%; height: 100%; display: block; }
+  .avatar-card .scales { display: flex; flex-direction: column; gap: 14px; }
+  .avatar-card .scale-row { display: flex; align-items: center; gap: 12px; }
+  .avatar-card .scale-row .px { font: 500 10px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-muted); min-width: 36px; }
+  .avatar-card .scale-row img { display: block; }
+  .avatar-card .scale-row.round img { border-radius: 50%; }
+  .avatar-card h3 { font: 500 16px/1.2 var(--font-body); margin: 0 0 4px; }
+  .avatar-card .meta { font: 400 12px/1.5 var(--font-mono); color: var(--fg-muted); }
+  .avatar-card .info { flex: 1; }
+  .avatar-card .info h3 { margin-bottom: 6px; }
+  .avatar-card .info p { font: 400 13px/1.5 var(--font-body); color: var(--fg-soft); margin: 0 0 12px; }
+  .recommendation {
+    display: inline-block; padding: 3px 10px; background: var(--accent-tint); color: var(--accent);
+    font: 500 10px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase;
+    border-radius: var(--radius-xs); margin-bottom: 8px;
+  }
+
+  /* Wide preview — GitHub social + LinkedIn banner shown at scaled width */
+  .wide {
+    background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-md);
+    padding: 24px; margin-bottom: 16px;
+  }
+  .wide img { display: block; width: 100%; height: auto; }
+  .wide .meta { font: 400 12px/1.5 var(--font-mono); color: var(--fg-muted); margin-top: 12px; display: flex; justify-content: space-between; align-items: center; }
+
+  /* Favicon strip — render at exact pixel sizes */
+  .favicons { display: flex; gap: 28px; align-items: flex-end; padding: 24px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-md); }
+  .favicons .item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .favicons .item img { display: block; border: 1px solid var(--border); }
+  .favicons .item .lbl { font: 500 10px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-muted); }
+
+  /* File list */
+  .files { background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px; }
+  .files h3 { font: 500 11px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-muted); margin: 0 0 14px; }
+  .files ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; }
+  .files li { font: 400 13px/1.5 var(--font-mono); color: var(--fg); display: flex; gap: 8px; align-items: baseline; }
+  .files li .sz { font: 400 11px/1 var(--font-mono); color: var(--fg-muted); margin-left: auto; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="head">
+    <span class="eyb">social & avatar marks</span>
+    <h1>Default identity for GitHub, LinkedIn, browsers.</h1>
+    <p class="lede">A square avatar (used in feeds and profile circles), a favicon (browser tab), a 1280×640 GitHub social card (OpenGraph preview), and a 1584×396 LinkedIn org banner. Every mark derives from the existing logo paths — no glyphs were redrawn.</p>
+  </div>
+
+  <!-- AVATARS -->
+  <section>
+    <h2>Avatar — square profile mark</h2>
+    <p class="sub">Two options. Both derive from the logo. The faithful "[TA]" reads as a logo fragment; the corner-mark variant is more graphic. Both shown at GitHub display sizes (40px) on the right, to verify they survive shrinking.</p>
+    <div class="avatars">
+
+      <div class="avatar-card">
+        <div class="big"><img src="../assets/social/avatar-primary-1000.png" alt="Avatar — primary"></div>
+        <div class="info">
+          <span class="recommendation">Recommended</span>
+          <h3>Primary · "[TA]"</h3>
+          <p>Faithful zoom-crop of the wordmark — vertical brackets framing the first two letters. Reads as a logo fragment; survives down to ~32px.</p>
+          <div class="scales">
+            <div class="scale-row round"><span class="px">280</span><img src="../assets/social/avatar-primary-1000.png" width="80" height="80"></div>
+            <div class="scale-row round"><span class="px">100</span><img src="../assets/social/avatar-primary-1000.png" width="48" height="48"></div>
+            <div class="scale-row round"><span class="px">40</span><img src="../assets/social/avatar-primary-1000.png" width="32" height="32"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="avatar-card">
+        <div class="big"><img src="../assets/social/avatar-corners-1000.png" alt="Avatar — corner marks"></div>
+        <div class="info">
+          <h3>Alternative · corner marks</h3>
+          <p>"TA" centered with asymmetric corner brackets (top-right + bottom-left). More graphic; the marks become decorative at small sizes.</p>
+          <div class="scales">
+            <div class="scale-row round"><span class="px">280</span><img src="../assets/social/avatar-corners-1000.png" width="80" height="80"></div>
+            <div class="scale-row round"><span class="px">100</span><img src="../assets/social/avatar-corners-1000.png" width="48" height="48"></div>
+            <div class="scale-row round"><span class="px">40</span><img src="../assets/social/avatar-corners-1000.png" width="32" height="32"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FAVICONS -->
+  <section>
+    <h2>Favicon — browser tab</h2>
+    <p class="sub">SVG favicon scales; PNG fallbacks at 16, 32, and 180 (apple-touch). The single-letter "T" variant is the safest choice for the smallest sizes.</p>
+    <div class="favicons">
+      <div class="item"><img src="../assets/social/favicon-32.png" width="32" height="32"><span class="lbl">favicon 32</span></div>
+      <div class="item"><img src="../assets/social/favicon-16.png" width="16" height="16"><span class="lbl">favicon 16</span></div>
+      <div class="item"><img src="../assets/social/favicon-T-32.png" width="32" height="32"><span class="lbl">T-only 32</span></div>
+      <div class="item"><img src="../assets/social/apple-touch-icon-180.png" width="64" height="64"><span class="lbl">apple-touch 180 (shown @ 64)</span></div>
+    </div>
+  </section>
+
+  <!-- GITHUB SOCIAL CARD -->
+  <section>
+    <h2>GitHub social card · 1280 × 640</h2>
+    <p class="sub">Opengraph preview shown whenever a TARIDE repository or org URL is shared. Also works for Twitter/X cards.</p>
+    <div class="wide">
+      <img src="../assets/social/github-social.png" alt="GitHub social card">
+      <div class="meta">
+        <span>assets/social/github-social.png</span>
+        <span>1280 × 640 · PNG</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- LINKEDIN BANNER -->
+  <section>
+    <h2>LinkedIn org banner · 1584 × 396</h2>
+    <p class="sub">Hero banner on the TARIDE org page. Bottom-left is intentionally quiet — the org's avatar overlays there.</p>
+    <div class="wide">
+      <img src="../assets/social/linkedin-banner.png" alt="LinkedIn org banner">
+      <div class="meta">
+        <span>assets/social/linkedin-banner.png</span>
+        <span>1584 × 396 · PNG</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FILE LIST -->
+  <section>
+    <h2>Files</h2>
+    <p class="sub">All marks live under <code style="font: 400 13px/1 var(--font-mono); background: var(--bg-raised); padding: 1px 6px;">assets/social/</code>. SVG sources are editable; PNG renders are upload-ready.</p>
+    <div class="files">
+      <h3>vector sources</h3>
+      <ul>
+        <li>avatar-primary.svg</li>
+        <li>avatar-corners.svg</li>
+        <li>favicon.svg</li>
+        <li>favicon-T.svg</li>
+        <li>favicon-T-dark.svg</li>
+        <li>github-social.svg</li>
+        <li>linkedin-banner.svg</li>
+      </ul>
+      <h3 style="margin-top: 24px;">raster exports</h3>
+      <ul>
+        <li>avatar-primary-1000.png <span class="sz">1000×1000</span></li>
+        <li>avatar-corners-1000.png <span class="sz">1000×1000</span></li>
+        <li>apple-touch-icon-180.png <span class="sz">180×180</span></li>
+        <li>favicon-32.png <span class="sz">32×32</span></li>
+        <li>favicon-16.png <span class="sz">16×16</span></li>
+        <li>favicon-T-32.png <span class="sz">32×32</span></li>
+        <li>github-social.png <span class="sz">1280×640</span></li>
+        <li>linkedin-banner.png <span class="sz">1584×396</span></li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
