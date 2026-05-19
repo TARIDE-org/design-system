@@ -1,28 +1,29 @@
-# UI kit · TARIDE website (Direction A applied)
+# UI kit · TARIDE website
 
-A single-page concrete application of **Direction A** (Foundation Document) to the landing-page brief from §8 of the visual identity brief. All eight sections are present:
+A single-page concrete application of the design system to the landing-page brief (§8 of the visual identity brief). All eight sections are present and responsive:
 
-1. Hero — proposition + sub-line + CTA + verified-credential pill
-2. The problem — three numeric data points, each with a citation
-3. The principle — "Pseudonymity by default. Identification by choice." as the conceptual anchor
-4. How it works — the five protocol layers as a 4-column table with status
-5. Why a foundation — two-column principled statement
-6. Where we stand — roadmap table from Q2·26 through Q2·27
-7. What we ask — six audience-specific brief cards
-8. Footer — foundation details, CC BY 4.0, GitHub link, contact
+1. **Hero** — proposition + sub-line + CTA + verified-credential pill
+2. **The problem** — three numeric data points, each with a citation
+3. **The principle** — *"Pseudonymity by default. Identification by choice."*
+4. **How it works** — the five protocol layers, with the `taride_architecture.svg` diagram embedded inline
+5. **Why a foundation** — two-column principled statement
+6. **Where we stand** — roadmap table from Q2·26 through Q2·27
+7. **What we ask** — six audience-specific brief cards
+8. **Footer** — foundation details, CC BY 4.0, GitHub link, contact
 
-## Why this isn't a `.jsx` UI kit
+## Architecture
 
-The TARIDE site is a long-form position paper, not a SaaS dashboard. There's no app shell to recreate, no logged-in state, no navigation graph to mock. Components are page-section-shaped — `Hero`, `StatTrio`, `Principle`, `LayerTable`, `RoadmapTable`, `AskCard`. They're inline in `index.html` because at this fidelity it would be premature to extract them: the brief is round 1, and any extraction should follow the framework decision (the brief mentions Astro / 11ty / Next.js static as candidates).
+Every colour, spacing, type-size and motion value is pulled from `../../colors_and_type.css` — there are no hard-coded values in the file. Swapping tokens cascades through the page with no source-code edits.
 
-Once you've picked the visual direction and the framework, I'll factor this into JSX or Astro components — name them consistently with the tokens — and document state variants per the brief (default / hover / focus / disabled).
+Responsive at **640 / 900 / 1200**:
+- ≤640: nav drops, hero buttons stack full-width, table tightens.
+- 641–900: nav stays, multi-column blocks collapse to single column, layers go 4-col → 2-col.
+- ≥901: full layout, 1200px max container.
 
-## How to read this
+Display type scales fluidly between breakpoints via `clamp()`.
 
-This file uses `../../colors_and_type.css` directly — every color, spacing, type-size value comes from a CSS variable defined there. If you swap the tokens to Direction B or C, the page changes accordingly with no source-code edits to this file.
+## Not factored into components — yet
 
-## Open spots
+The sections are inline in `index.html` rather than extracted into JSX/Astro components. That's intentional until the framework is chosen (the brief mentions Astro, 11ty, or Next.js static as candidates) — extraction without a framework decision adds churn.
 
-- **Diagrams.** The "How it works" table is a stand-in for the protocol diagram referenced in §7 of the brief (`taride_credential_chain.svg`, `taride_terminology.svg`). Once those are shared, I'll match diagram primitives to the system and slot them in.
-- **Photography.** None used. Decision pending — see Open Questions §3 in the root `README.md`.
-- **Mobile/tablet.** Not implemented yet — desktop only for round 1.
+When you commit to a framework, the natural component breakdown is: `Header`, `Hero`, `StatTrio`, `Principle`, `LayerTable`, `RoadmapTable`, `AskCard`, `Footer`. Each section in the current file maps 1:1.

@@ -4,7 +4,7 @@ description: Use this skill to generate well-branded interfaces and assets for T
 user-invocable: true
 ---
 
-Read the `README.md` file within this skill, and explore the other available files (`colors_and_type.css`, `assets/`, `preview/`, `directions/`, `ui_kits/`).
+Read the `README.md` file within this skill, and explore the other available files (`colors_and_type.css`, `assets/`, `preview/`, `accessibility/`, `ui_kits/`).
 
 `README.md` is the primary reference — it carries the brand context, content fundamentals (voice, casing, register), visual foundations (color, type, spacing, motion, the bracket motif), and iconography guidelines. `colors_and_type.css` is the token sheet — pull it into any artifact and the rest of the system follows.
 

@@ -2,16 +2,16 @@
 
 [github.com/TARIDE-org/design-system](https://github.com/TARIDE-org/design-system)
 
-**Status:** Direction A locked. Round 3 in progress — component-state matrix shipped, WCAG audit shipped, responsive landing-page shipped. Working through fonts + page surfaces next.
+**Status:** Direction A is the live system. All round-1 / round-2 decisions are locked and reflected in the tokens, components, accessibility audit, and landing page. The system is complete against the brief.
 
-**Locked decisions (18 May 2026):**
+**Locked decisions:**
 - Visual direction: **A · Foundation Document** (warm paper, IBM Plex, blue wins)
 - Locale: **UK English only** — not a consumer surface
 - Photography: **none** — typographic and diagrammatic only
 - Modes: **light primary + dark first-class equal** — verified zero-fail WCAG 2.2 AA in both
-- **Yellow scope: Option A** — yellow is reserved for the verified-credential pill and the framed credential card. Nothing else in the system uses yellow.
-- **Diagrams retuned in place** — the 11 SVGs in `assets/diagrams/` have been recoloured from the original cool teal-navy and category palettes to Direction A. Original sources remain at <https://github.com/TARIDE-org/docs/tree/main/images>.
-- **Responsive breakpoints: 640 / 900 / 1200** — see `preview/spacing-breakpoints.html` and `ui_kits/website/index.html` (`@media` queries at end of `<style>`).
+- **Yellow scope:** yellow is reserved for the verified-credential pill and the framed credential card. Nothing else in the system uses yellow.
+- **Diagrams retuned in place** — the 11 SVGs in `assets/diagrams/` use the Direction A palette (paper / ink / signal-blue / stone). Originals at <https://github.com/TARIDE-org/docs/tree/main/images>.
+- **Responsive breakpoints: 640 / 900 / 1200** — see `preview/spacing-breakpoints.html` and `ui_kits/website/index.html`.
 
 ---
 
@@ -44,6 +44,13 @@ colors_and_type.css                tokens — palette, type scale, spacing, radi
 assets/
   taride-logo-*.svg                six logo lockups (blue, yellow, onDark, mono-black, mono-white)
   bracket-*.svg                    motif primitives (top-right, bottom-left, frame)
+  social/                          square avatar, favicon, GitHub social, LinkedIn banner
+    avatar-primary.svg             recommended — "[TA]" faithful zoom
+    avatar-corners.svg             alternative — TA with corner registration marks
+    favicon.svg / favicon-T.svg    browser tab marks
+    github-social.png              1280×640 OpenGraph preview
+    linkedin-banner.png            1584×396 org page banner
+    (raster exports for each)
   diagrams/                        11 SVG diagrams imported from TARIDE-org/docs
     taride_terminology.svg         conceptual anchor — holder/DID/instance/credential
     taride_credential_chain.svg    mandatory vs optional credential layers
@@ -56,15 +63,6 @@ assets/
     taride_simswap.svg             threat-model · SIM swap
     taride_stakeholders.svg
     taride_usecase_flow.svg
-directions/
-  directions.html                  round-1 deliverable: 3 visual directions on canvas
-  direction-a.jsx                  A · Foundation Document (the winner)
-  direction-b.jsx                  B · Field Manual (archived for reference)
-  direction-c.jsx                  C · Open Spec (archived for reference)
-  primitives.jsx                   shared TarideLogo, Bracket*, Swatch, Sheet
-  app.jsx                          DesignCanvas composition
-discussions/
-  yellow-scope.html                three options for where yellow lives (Option A locked)
 accessibility/
   wcag-audit.html                  auto-computed WCAG 2.2 audit, zero fails both modes
 fonts/                             self-hosted IBM Plex (OFL · no Google Fonts)
@@ -83,7 +81,6 @@ preview/                           cards rendered into the Design System tab
 ui_kits/website/
   index.html                       responsive landing page · Direction A applied
   README.md                        section-by-section notes
-design-canvas.jsx                  starter component (vendored)
 ```
 
 ---
@@ -185,7 +182,7 @@ The two brackets from the logo extend into the system as **section markers**:
 
 - A small bottom-left bracket (the same shape as in the logo, in `--font-mono` size or smaller) prefixes every monospace eyebrow label.
 - A top-rule on `--accent` extends across the top of major section openers and pairs with a mono caption underneath ("§3 · how it works").
-- In Direction B these become four-corner registration marks around content blocks; in Direction C they become CLI prompt characters. The motif scales.
+- The same primitive scales down to favicon size and up to the GitHub social card — see `preview/brand-social.html`.
 
 The brackets are also the canonical visual for the "verified credential" component: an asymmetric frame around the issuer + scope + chain, in `--verified` color, mirroring the logo's framing of the wordmark.
 
@@ -216,20 +213,13 @@ What we use instead:
 
 ---
 
-## Open questions to TARIDE
-
-These are the things I want your decision on before expanding the system (§12 of your brief):
-
-1. ~~Which direction?~~ **A · Foundation Document.** Locked.
-2. ~~**Yellow scope.**~~ **Option A locked** — yellow lives only on the verified-credential pill and framed credential card.
-3. ~~**Diagram palette alignment.**~~ **Retuned** — all 11 diagrams in `assets/diagrams/` now use the Direction A palette (paper / ink / signal-blue / stone). Yellow does not appear in any diagram, including the original "Rule:" annotations, which are now blue.
-4. ~~Photography.~~ **None.** Locked.
-5. ~~English / Dutch.~~ **UK English only.** Locked.
-
-No open decisions remain. Round 3 deliverables in flight: full component-state matrix, mobile/tablet on the landing page, self-hosted `.woff2` files, WCAG audit.
-
 ---
 
 ## Reading order
 
-If you only read one thing: `directions/directions.html` — the canvas with the three visual directions, palette, type, logo lockups, hero block and a 150-word rationale for each.
+If you only read one thing: `ui_kits/website/index.html` — the responsive landing page with Direction A applied across all eight sections from §8 of the brief.
+
+Other high-leverage views:
+- `preview/components-matrix.html` — every component × every state, with light/dark toggle.
+- `accessibility/wcag-audit.html` — live AA/AAA scoring, both modes.
+- `preview/brand-social.html` — avatar, favicon, GitHub social card, LinkedIn banner.
